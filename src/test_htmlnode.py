@@ -1,5 +1,4 @@
 import unittest
-
 from htmlnode import HTMLNode
 
 
@@ -13,7 +12,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertIsNone(node.props)
 
     def test_node_with_all_props_set(self):
-        tag = "<p>"
+        tag = "p"
         value = "I'm a paragraph!"
         children = [HTMLNode("a tag"), HTMLNode("another tag")]
         props = {
@@ -60,9 +59,9 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(actual_repr, expected_repr, f"Actual __repr__: {actual_repr}")
 
     def test_repr_node_with_props(self):
-        node = HTMLNode("<p>", "test value", [], {"prop": "property stuff"})
+        node = HTMLNode("p", "test value", [], {"prop": "property stuff"})
 
         actual_repr = repr(node)
-        expected_repr = "HTMLNode(<p>, test value, [], {\'prop\': \'property stuff\'})"
+        expected_repr = "HTMLNode(p, test value, [], {\'prop\': \'property stuff\'})"
 
         self.assertEqual(actual_repr, expected_repr, f"Actual __repr__: {actual_repr}")
