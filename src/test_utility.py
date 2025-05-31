@@ -4,6 +4,7 @@ from textnode import TextType, TextNode
 
 
 class TestUtility(unittest.TestCase):
+    # Split Nodes Delimiter
     def test_empty_string(self):
         node = TextNode("", TextType.NORMAL)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
@@ -84,3 +85,35 @@ class TestUtility(unittest.TestCase):
             self.assertEqual(actual_node.text, expected_node.text)
             self.assertEqual(actual_node.text_type, expected_node.text_type)
             self.assertEqual(actual_node.url, expected_node.url)
+
+    # Extract Markdown Images
+    def test_extract_images(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        expected = [
+            ("rick roll", "https://i.imgur.com/aKaOqIh.gif"),
+            ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")
+        ]
+        self.assertListEqual(extract_markdown_images(text), expected)
+
+    def test_extract_images_nested_brackets(self):
+        text = "More text ![stuff[nest]](https://www.google.com)"
+        expected = []
+        self.assertListEqual(extract_markdown_images(text), expected)
+
+    def test_extract_links(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        expected = [
+            ("to boot dev", "https://www.boot.dev"),
+            ("to youtube", "https://www.youtube.com/@bootdotdev")
+        ]
+        self.assertListEqual(extract_markdown_links(text), expected)
+
+    def test_extract_links_nested_brackets(self):
+        text = "More text [stuff[nest]](https://www.google.com)"
+        expected = []
+        self.assertListEqual(extract_markdown_images(text), expected)
+
+    def test_extract_links_ignore_images(self):
+        text = "Here is an image: ![myimage](https://www.google.com) and link: [mylink](google.com)"
+        expected = [("mylink", "google.com")]
+        self.assertListEqual(extract_markdown_links(text), expected)
