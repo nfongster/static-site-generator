@@ -2,6 +2,11 @@ import re
 from textnode import TextType, TextNode
 
 
+def markdown_to_blocks(markdown):
+    blocks = markdown.split("\n\n")
+    return list(filter(lambda b: b != "", [block.strip() for block in blocks]))
+
+
 def text_to_textnodes(text):
     # Assumption: there is no nesting (e.g., no bold within a link)
     return split_nodes_link(
