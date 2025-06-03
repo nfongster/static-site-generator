@@ -2,6 +2,17 @@ import re
 from textnode import TextType, TextNode
 
 
+def text_to_textnodes(text):
+    # Assumption: there is no nesting (e.g., no bold within a link)
+    return split_nodes_link(
+        split_nodes_image(
+            split_nodes_delimiter(
+                split_nodes_delimiter(
+                    split_nodes_delimiter([TextNode(text, TextType.NORMAL)], "**", TextType.BOLD),\
+                "_", TextType.ITALIC), \
+            "`", TextType.CODE)))
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for node in old_nodes:

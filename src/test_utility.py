@@ -265,3 +265,39 @@ class TestUtility(unittest.TestCase):
             ],
             new_nodes,
         )
+
+    # Text to TextNodes
+
+    def test_text_to_textnodes(self):
+        new_nodes = text_to_textnodes("This is a **very bold** node with a [link](www.google.com) and an ![image](not.a.url) and some _italics_")
+        self.assertListEqual(
+            [
+                TextNode("This is a ", TextType.NORMAL),
+                TextNode("very bold", TextType.BOLD),
+                TextNode(" node with a ", TextType.NORMAL),
+                TextNode("link", TextType.LINK, "www.google.com"),
+                TextNode(" and an ", TextType.NORMAL),
+                TextNode("image", TextType.IMAGE, "not.a.url"),
+                TextNode(" and some ", TextType.NORMAL),
+                TextNode("italics", TextType.ITALIC)
+            ],
+            new_nodes
+        )
+
+    def test_text_to_textnodes_supplied_case(self):
+        new_nodes = text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.NORMAL),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.NORMAL),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.NORMAL),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.NORMAL),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.NORMAL),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+            new_nodes
+        )
