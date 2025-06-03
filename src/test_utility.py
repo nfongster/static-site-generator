@@ -136,7 +136,6 @@ class TestUtility(unittest.TestCase):
     def test_split_image_link_first(self):
         node = TextNode("![image](https://i.imgur.com/zjjcJKZ.png) is a link", TextType.NORMAL)
         new_nodes = split_nodes_image([node])
-        print(new_nodes)
         self.assertListEqual([
             TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
             TextNode(" is a link", TextType.NORMAL)
@@ -145,7 +144,6 @@ class TestUtility(unittest.TestCase):
     def test_split_image_link_second(self):
         node = TextNode("Here is link: ![image](https://i.imgur.com/zjjcJKZ.png)", TextType.NORMAL)
         new_nodes = split_nodes_image([node])
-        print(new_nodes)
         self.assertListEqual([
             TextNode("Here is link: ", TextType.NORMAL),
             TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png")
@@ -195,3 +193,75 @@ class TestUtility(unittest.TestCase):
         )
 
     # Split Nodes Link
+    def test_split_link_no_links(self):
+        node = TextNode("no links here!", TextType.NORMAL)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([
+            TextNode("no links here!", TextType.NORMAL)
+        ], new_nodes)
+
+    def test_split_link_link_only(self):
+        node = TextNode("[link](https://i.imgur.com/zjjcJKZ.png)", TextType.NORMAL)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([
+            TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png")
+        ], new_nodes)
+
+    def test_split_link_link_first(self):
+        node = TextNode("[link](https://i.imgur.com/zjjcJKZ.png) is a link", TextType.NORMAL)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([
+            TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
+            TextNode(" is a link", TextType.NORMAL)
+        ], new_nodes)
+
+    def test_split_link_link_second(self):
+        node = TextNode("Here is link: [link](https://i.imgur.com/zjjcJKZ.png)", TextType.NORMAL)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([
+            TextNode("Here is link: ", TextType.NORMAL),
+            TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png")
+        ], new_nodes)
+
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with a [link](https://i.imgur.com/zjjcJKZ.png) and another [second link](https://i.imgur.com/3elNhQu.png)",
+            TextType.NORMAL,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", TextType.NORMAL),
+                TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.NORMAL),
+                TextNode(
+                    "second link", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+
+    def test_split_links_two_nodes(self):
+        node1 = TextNode(
+            "This is text with a [link](https://i.imgur.com/zjjcJKZ.png) and another [second link](https://i.imgur.com/3elNhQu.png)",
+            TextType.NORMAL,
+        )
+        node2 = TextNode(
+            "This [link](https://i.imgur.com/zjjcJKZ.png) is just a copy",
+            TextType.NORMAL,
+        )
+        new_nodes = split_nodes_link([node1, node2])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", TextType.NORMAL),
+                TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.NORMAL),
+                TextNode(
+                    "second link", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
+                ),
+                TextNode("This ", TextType.NORMAL),
+                TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" is just a copy", TextType.NORMAL)
+            ],
+            new_nodes,
+        )

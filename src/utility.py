@@ -26,24 +26,40 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
 
 def split_nodes_image(old_nodes):
+    return __split_nodes_shared(
+        old_nodes, TextType.IMAGE, lambda text, url: f"![{text}]({url})")
+
+
+def split_nodes_link(old_nodes):
+    return __split_nodes_shared(
+        old_nodes, TextType.LINK, lambda text, url: f"[{text}]({url})")
+
+
+def __split_nodes_shared(old_nodes, link_type, formatter):
     new_nodes = []
+    if link_type not in [TextType.LINK, TextType.IMAGE]:
+        raise ValueError(f"Unsupported link type: {link_type}")
+    
     for node in old_nodes:
         if node.text_type != TextType.NORMAL:
             new_nodes.append(node)
             continue
+
+        text_link_tuples = extract_markdown_images(node.text) \
+            if link_type == TextType.IMAGE \
+            else extract_markdown_links(node.text)
         
-        images = extract_markdown_images(node.text)
-        if len(images) == 0:
+        if len(text_link_tuples) == 0:
             new_nodes.append(node)
             continue
         
         running_text = node.text
-        for alt_text, url in images:
-            split_text = running_text.split(f"![{alt_text}]({url})")
-            # If the original text did not start with the image link
+        for text, url in text_link_tuples:
+            split_text = running_text.split(formatter(text, url))
+            # If the original text did not start with the link
             if split_text[0] != "":
                 new_nodes.append(TextNode(split_text[0], TextType.NORMAL))
-            new_nodes.append(TextNode(alt_text, TextType.IMAGE, url))
+            new_nodes.append(TextNode(text, link_type, url))
             running_text = split_text[1]  # TODO: Make recursive
         
         # Check for trailing, non-link text
@@ -51,11 +67,6 @@ def split_nodes_image(old_nodes):
             new_nodes.append(TextNode(running_text, TextType.NORMAL))
 
     return new_nodes
-            
-
-
-def split_nodes_link(old_nodes):
-    pass
 
 
 def extract_markdown_images(text):
