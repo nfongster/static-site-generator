@@ -40,7 +40,7 @@ def markdown_to_html_node(markdown):
         block_type = block_to_blocktype(block)
         block_node = ParentNode(block_type_to_tag(block_type, get_num_hashes(block)), None)
         if block_type == BlockType.CODE:
-            block_node.children = [text_node_to_html_node(TextNode(block.strip("```").lstrip("\n"), TextType.CODE))]
+            block_node.children = [TextNode(block.strip("```").lstrip("\n"), TextType.CODE).to_html_node()]
         else:
             block_node.children = text_to_children(block.lstrip("# "))  # TODO: This is suspect...
         block_nodes.append(block_node)
@@ -69,7 +69,7 @@ def block_type_to_tag(block_type, n=0):
 
 def text_to_children(text):
     nodes = text_to_textnodes(text)
-    return [text_node_to_html_node(node) for node in nodes]
+    return [node.to_html_node() for node in nodes]
 
 
 def get_num_hashes(text):

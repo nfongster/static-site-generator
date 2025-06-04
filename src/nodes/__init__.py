@@ -8,6 +8,5 @@ __all__ = [
     "LeafNode",
     "ParentNode",
     "TextType",
-    "TextNode",
-    "text_node_to_html_node"
+    "TextNode"
 ]
