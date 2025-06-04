@@ -1,5 +1,5 @@
 from functools import reduce
-from htmlnode import HTMLNode
+from nodes import *
 
 
 class ParentNode(HTMLNode):

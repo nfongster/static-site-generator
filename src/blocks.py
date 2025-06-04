@@ -2,8 +2,7 @@ from enum import Enum
 import re
 from functools import reduce
 from utility import *
-from parentnode import ParentNode
-from textnode import *
+from nodes import *
 
 
 class BlockType(Enum):

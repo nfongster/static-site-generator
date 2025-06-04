@@ -1,4 +1,4 @@
-from textnode import *
+from nodes import *
 
 def main():
     text = "This is some anchor text"

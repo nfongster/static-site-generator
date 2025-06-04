@@ -1,5 +1,5 @@
 import re
-from textnode import TextType, TextNode
+from nodes import *
 
 
 def markdown_to_blocks(markdown):
