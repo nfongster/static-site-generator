@@ -72,3 +72,51 @@ class TestUtility(unittest.TestCase):
         block = "1 This is\n2. an invalid  \n3.  List"
         block_type = block_to_blocktype(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH)
+
+    # MD -> HTML Conversion
+    def test_headers(self):
+        md = """
+# This is a header
+
+## This is a smaller header
+
+###### This is the smallest header
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>This is a header</h1><h2>This is a smaller header</h2><h6>This is the smallest header</h6></div>"
+        )
+
+    def test_paragraphs(self):
+        md = """
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is <b>bolded</b> paragraph\ntext in a p\ntag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        )
+
+    def test_codeblock(self):
+        md = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
