@@ -1,17 +1,25 @@
-from enum import Enum
 import re
 from functools import reduce
 from conversion import *
 from nodes import *
 
 
-class BlockType(Enum):
-    PARAGRAPH = 1,
-    HEADING = 2,
-    CODE = 3,
-    QUOTE = 4,
-    UNORDERED_LIST = 5,
-    ORDERED_LIST = 6
+def markdown_to_html_node(markdown):
+    block_nodes = []
+    for block in markdown_to_blocks(markdown):
+        block_type = block_to_blocktype(block)
+        block_node = ParentNode(__block_type_to_tag(block_type, __get_num_hashes(block)), None)
+        if block_type == BlockType.CODE:
+            block_node.children = [TextNode(block.strip("```").lstrip("\n"), TextType.CODE).to_html_node()]
+        else:
+            block_node.children = __text_to_children(block.lstrip("# "))  # TODO: This is suspect...
+        block_nodes.append(block_node)
+    return ParentNode("div", block_nodes)
+
+
+def markdown_to_blocks(markdown):
+    blocks = markdown.split("\n\n")
+    return list(filter(lambda b: b != "", [block.strip() for block in blocks]))
 
 
 def block_to_blocktype(block):
@@ -34,20 +42,7 @@ def block_to_blocktype(block):
     return BlockType.PARAGRAPH
 
 
-def markdown_to_html_node(markdown):
-    block_nodes = []
-    for block in markdown_to_blocks(markdown):
-        block_type = block_to_blocktype(block)
-        block_node = ParentNode(block_type_to_tag(block_type, get_num_hashes(block)), None)
-        if block_type == BlockType.CODE:
-            block_node.children = [TextNode(block.strip("```").lstrip("\n"), TextType.CODE).to_html_node()]
-        else:
-            block_node.children = text_to_children(block.lstrip("# "))  # TODO: This is suspect...
-        block_nodes.append(block_node)
-    return ParentNode("div", block_nodes)
-
-
-def block_type_to_tag(block_type, n=0):
+def __block_type_to_tag(block_type, n=0):
     match block_type:
         case BlockType.PARAGRAPH:
             return "p"
@@ -67,14 +62,14 @@ def block_type_to_tag(block_type, n=0):
             raise ValueError(f"Unsupported block type: {block_type}")
 
 
-def text_to_children(text):
-    nodes = text_to_textnodes(text)
-    return [node.to_html_node() for node in nodes]
-
-
-def get_num_hashes(text):
+def __get_num_hashes(text):
     matched = re.match(r'^#{1,6} ', text)
     if not matched:
         return 0
     count = len(matched.group(0)) - 1
     return max(count, 0)
+
+
+def __text_to_children(text):
+    nodes = text_to_textnodes(text)
+    return [node.to_html_node() for node in nodes]

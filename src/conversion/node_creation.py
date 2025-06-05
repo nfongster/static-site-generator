@@ -2,11 +2,6 @@ import re
 from nodes import *
 
 
-def markdown_to_blocks(markdown):
-    blocks = markdown.split("\n\n")
-    return list(filter(lambda b: b != "", [block.strip() for block in blocks]))
-
-
 def text_to_textnodes(text):
     # Assumption: there is no nesting (e.g., no bold within a link)
     return split_nodes_link(
@@ -42,16 +37,14 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
 
 def split_nodes_image(old_nodes):
-    return __split_nodes_shared(
-        old_nodes, TextType.IMAGE, lambda text, url: f"![{text}]({url})")
+    return __split_nodes(old_nodes, TextType.IMAGE, lambda text, url: f"![{text}]({url})")
 
 
 def split_nodes_link(old_nodes):
-    return __split_nodes_shared(
-        old_nodes, TextType.LINK, lambda text, url: f"[{text}]({url})")
+    return __split_nodes(old_nodes, TextType.LINK, lambda text, url: f"[{text}]({url})")
 
 
-def __split_nodes_shared(old_nodes, link_type, formatter):
+def __split_nodes(old_nodes, link_type, formatter):
     new_nodes = []
     if link_type not in [TextType.LINK, TextType.IMAGE]:
         raise ValueError(f"Unsupported link type: {link_type}")
