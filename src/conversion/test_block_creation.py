@@ -2,7 +2,7 @@ import unittest
 from conversion import *
 
 
-class TestUtility(unittest.TestCase):
+class TestBlockCreation(unittest.TestCase):
     def test_paragraph(self):
         block = "This is some text."
         block_type = block_to_blocktype(block)

@@ -3,7 +3,7 @@ from conversion import *
 from nodes import *
 
 
-class TestUtility(unittest.TestCase):
+class TestNodeCreation(unittest.TestCase):
     # Split Nodes Delimiter
     def test_empty_string(self):
         node = TextNode("", TextType.NORMAL)
