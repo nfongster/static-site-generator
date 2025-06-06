@@ -33,7 +33,7 @@ def copy_static(source, destination):
 
 
 def main():
-    copy_static("../static", "../public")
+    copy_static("static", "public")
 
 
 if __name__ == '__main__':
