@@ -120,3 +120,55 @@ the **same** even with inline stuff
             html,
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
+
+    def test_blockquote_one_line(self):
+        md = """
+>This is a single-line quote block
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a single-line quote block</blockquote></div>"
+        )
+
+    def test_blockquote_multiline(self):
+        md = """
+>This is a 
+>multi-line
+>block quote
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a \nmulti-line\nblock quote</blockquote></div>"
+        )
+
+    def test_unordered_list(self):
+        md = """
+- An item
+- Another item
+- Some item
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>An item</li><li>Another item</li><li>Some item</li></ul></div>"
+        )
+
+    def test_ordered_list(self):
+        md = """
+1. An item
+2. Another item
+3. Some item
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>An item</li><li>Another item</li><li>Some item</li></ol></div>"
+        )
