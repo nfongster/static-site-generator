@@ -28,6 +28,9 @@ class TextNode():
                 })
             case _:
                 raise Exception(f"invalid text type: {self.text_type}")
+
+    def to_html_listitem_node(self):
+        return LeafNode("li", self.text)
     
     def __eq__(self, other_node):
         return self.text == other_node.text \

@@ -71,33 +71,23 @@ def __block_type_to_tag(block_type, n=0):
 
 
 def __create_child_nodes(block, block_type):
-    if block_type == BlockType.CODE:
-        return [TextNode(block.strip("```").lstrip("\n"), TextType.CODE).to_html_node()]
-    
-    elif block_type == BlockType.UNORDERED_LIST:
-        children = []
-        for item in block.replace("\n", "").split("- ")[1:]:
-            node = TextNode(item, TextType.NORMAL).to_html_node()
-            node.tag = "li"
-            children.append(node)
-        return children
-    
-    elif block_type == BlockType.ORDERED_LIST:
-        children = []
-        for item in [re.sub(r'^\d+\.\s*', '', line) for line in block.split("\n")]:
-            node = TextNode(item, TextType.NORMAL).to_html_node()
-            node.tag = "li"
-            children.append(node)
-        return children
-    
-    text = __remove_markdown(block, block_type)
-    return [node.to_html_node() for node in text_to_textnodes(text)]
-
-
-def __remove_markdown(text, block_type):
     match block_type:
+        case BlockType.CODE:
+            return [TextNode(block.strip("```").lstrip("\n"), TextType.CODE).to_html_node()]
+
+        case BlockType.UNORDERED_LIST:
+            return [TextNode(item, TextType.NORMAL).to_html_listitem_node() 
+                for item in block.replace("\n", "").split("- ")[1:]]
+    
+        case BlockType.ORDERED_LIST:
+            return [TextNode(item, TextType.NORMAL).to_html_listitem_node() 
+                for item in [re.sub(r'^\d+\.\s*', '', line) for line in block.split("\n")]]
+
         case BlockType.HEADING:
-            text = text.lstrip("# ")
+            return [node.to_html_node() for node in text_to_textnodes(block.lstrip("# "))]
+
         case BlockType.QUOTE:
-            text = text.lstrip(">").replace("\n>", "\n")
-    return text
+            return [node.to_html_node() for node in text_to_textnodes(block.lstrip(">").replace("\n>", "\n"))]
+
+        case _:
+            return [node.to_html_node() for node in text_to_textnodes(block)]
