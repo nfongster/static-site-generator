@@ -123,7 +123,7 @@ the **same** even with inline stuff
 
     def test_blockquote_one_line(self):
         md = """
->This is a single-line quote block
+> This is a single-line quote block
 """
         node = markdown_to_html_node(md)
         html = node.to_html()
@@ -134,9 +134,9 @@ the **same** even with inline stuff
 
     def test_blockquote_multiline(self):
         md = """
->This is a 
->multi-line
->block quote
+> This is a 
+> multi-line
+> block quote
 """
         node = markdown_to_html_node(md)
         html = node.to_html()

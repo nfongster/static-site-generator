@@ -87,7 +87,7 @@ def __create_child_nodes(block, block_type):
             return [node.to_html_node() for node in text_to_textnodes(block.lstrip("# "))]
 
         case BlockType.QUOTE:
-            return [node.to_html_node() for node in text_to_textnodes(block.lstrip(">").replace("\n>", "\n"))]
+            return [node.to_html_node() for node in text_to_textnodes(block.lstrip("> ").replace("\n> ", "\n"))]
 
         case _:
             return [node.to_html_node() for node in text_to_textnodes(block)]
