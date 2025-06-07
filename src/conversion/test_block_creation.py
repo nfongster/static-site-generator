@@ -200,3 +200,9 @@ the **same** even with inline stuff
             html,
             "<div><ol><li>A <b>bold</b> item</li><li>Another item</li><li>Some item with an <img src=\"my.url\" alt=\"image\"></img></li></ol></div>"
         )
+
+    def test_unordered_list_one_item(self):
+        md = """- **bold stuff**"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(html, "<div><ul><li><b>bold stuff</b></li></ul></div>")

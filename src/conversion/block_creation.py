@@ -95,11 +95,4 @@ def __create_child_nodes(block, block_type):
 
 def __create_child_nodes_for_list_items(text_items):
     child_nodes_per_item = [__create_child_nodes(text, TextType.NORMAL) for text in text_items]
-    nodes = []
-    for children in child_nodes_per_item:
-        if len(children) == 1:
-            children[0].tag = "li"
-            nodes.append(children[0])
-        else:
-            nodes.append(ParentNode("li", children))
-    return nodes
+    return [ParentNode("li", children) for children in child_nodes_per_item]
