@@ -36,14 +36,14 @@ def copy_static(source, destination):
 def main():
     args, basepath = sys.argv, ""
     if len(args) < 2:
-        print("Basepath defaulting to \"\\\".")
-        basepath = "\\"
+        print("Basepath defaulting to /.")
+        basepath = "/"
     else:
         basepath = args[1]
         print(f"Basepath: {basepath}")
     
-    copy_static("static", "public")
-    generate_pages_recursive("content", "template.html", "public")
+    copy_static("static", "docs")
+    generate_pages_recursive("content", "template.html", "docs", basepath)
 
 
 if __name__ == '__main__':
