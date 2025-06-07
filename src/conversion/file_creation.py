@@ -10,9 +10,7 @@ def extract_title(markdown):
     if not re.search(r'^# ', markdown):
         raise Exception("The first line in the markdown file must start with \"# \"!")
     
-    # TODO: optimize so you are not splitting and re-joining the markdown
-    split_md = markdown.split("\n\n")
-    return split_md[0].lstrip("# ").strip(), "\n\n".join(split_md[1:]) if len(split_md) > 1 else ""
+    return markdown.split("\n\n")[0].lstrip("# ").strip()
 
 
 
@@ -24,10 +22,10 @@ def generate_page(from_path, template_path, dest_path):
     with open(template_path) as file:
         template = file.read()
     
-    title, content = extract_title(markdown)
+    title = extract_title(markdown)
     print(f"Title: {title}\n")
-    print(f"-----Content (Original Markdown)-----\n\n{content}\n")
-    node = markdown_to_html_node(content).to_html()
+    print(f"-----Content (Original Markdown)-----\n\n{markdown}\n")
+    node = markdown_to_html_node(markdown).to_html()
 
     print("Editing template.html with the title and HTML content above...\n")
     generated_html = template.replace(TITLE_PLACEHOLDER, title)\
