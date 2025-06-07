@@ -172,3 +172,31 @@ the **same** even with inline stuff
             html,
             "<div><ol><li>An item</li><li>Another item</li><li>Some item</li></ol></div>"
         )
+
+    def test_unordered_list_with_embedded_content(self):
+        md = """
+- A **bold** item
+- Another item
+- Some item with a [link](my.url)
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>A <b>bold</b> item</li><li>Another item</li><li>Some item with a <a href=\"my.url\">link</a></li></ul></div>"
+        )
+
+    def test_ordered_list_with_embedded_content(self):
+        md = """
+1. A **bold** item
+2. Another item
+3. Some item with an ![image](my.url)
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>A <b>bold</b> item</li><li>Another item</li><li>Some item with an <img src=\"my.url\" alt=\"image\"></img></li></ol></div>"
+        )

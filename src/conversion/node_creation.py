@@ -21,7 +21,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             continue
         
         if node.text.count(delimiter) % 2 != 0:
-            raise Exception(f"Delimiter count must be even!  Bad node: {node}")
+            raise Exception(f"Delimiter ({delimiter}) count must be even!  Bad node: {node}")
         
         in_main_text = True
         for subtext in node.text.split(delimiter):

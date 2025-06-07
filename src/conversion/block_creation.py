@@ -76,12 +76,12 @@ def __create_child_nodes(block, block_type):
             return [TextNode(block.strip("```").lstrip("\n"), TextType.CODE).to_html_node()]
 
         case BlockType.UNORDERED_LIST:
-            return [TextNode(item, TextType.NORMAL).to_html_listitem_node() 
-                for item in block.replace("\n", "").split("- ")[1:]]
+            text_items = [item for item in block.replace("\n", "").split("- ")[1:]]
+            return __create_child_nodes_for_list_items(text_items)
     
         case BlockType.ORDERED_LIST:
-            return [TextNode(item, TextType.NORMAL).to_html_listitem_node() 
-                for item in [re.sub(r'^\d+\.\s*', '', line) for line in block.split("\n")]]
+            text_items = [item for item in [re.sub(r'^\d+\.\s*', '', line) for line in block.split("\n")]]
+            return __create_child_nodes_for_list_items(text_items)
 
         case BlockType.HEADING:
             return [node.to_html_node() for node in text_to_textnodes(block.lstrip("# "))]
@@ -91,3 +91,15 @@ def __create_child_nodes(block, block_type):
 
         case _:
             return [node.to_html_node() for node in text_to_textnodes(block)]
+
+
+def __create_child_nodes_for_list_items(text_items):
+    child_nodes_per_item = [__create_child_nodes(text, TextType.NORMAL) for text in text_items]
+    nodes = []
+    for children in child_nodes_per_item:
+        if len(children) == 1:
+            children[0].tag = "li"
+            nodes.append(children[0])
+        else:
+            nodes.append(ParentNode("li", children))
+    return nodes
