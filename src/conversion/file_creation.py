@@ -13,6 +13,25 @@ def extract_title(markdown):
     return markdown.split("\n\n")[0].lstrip("# ").strip()
 
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if os.path.isfile(dir_path_content):
+        root, extension = os.path.splitext(dir_path_content)
+        if extension == ".md":
+            dest_root, _ = os.path.splitext(dest_dir_path)
+            dest_file = dest_root + ".html"
+            print(f"Copying {dir_path_content} ---> {dest_file}")
+            generate_page(dir_path_content, template_path, dest_file)
+
+    else:
+        if not os.path.exists(dest_dir_path):
+            print(f"Directory does not exist: {dest_dir_path}")
+            os.mkdir(dest_dir_path)
+        for item in os.listdir(dir_path_content):
+            source = os.path.join(dir_path_content, item)
+            destination = os.path.join(dest_dir_path, item)
+            print(f"New source to destination: {source} ---> {destination}")
+            generate_pages_recursive(source, template_path, destination)
+
 
 def generate_page(from_path, template_path, dest_path):
     print(F"Generating page from {from_path} to {dest_path} using {template_path}")
@@ -33,6 +52,6 @@ def generate_page(from_path, template_path, dest_path):
     print(generated_html)
 
     if not os.path.exists(os.path.dirname(dest_path)):
-        os.mkdirs(os.path.dirname(dest_path))
+        os.mkdir(os.path.dirname(dest_path))
     with open(dest_path, "x") as file:
         file.write(generated_html)

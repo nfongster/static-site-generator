@@ -23,7 +23,7 @@ def copy_static(source, destination):
         os.mkdir(destination)
     
     print(f"This app will copy the contents of {source} ---> {destination}")
-    print(f"Deleting the following files in {destination}:")
+    print(f"Deleting the following files/folders in {destination}:")
     for filename in os.listdir(destination):
         print(f"\t{filename}")
     
@@ -35,7 +35,7 @@ def copy_static(source, destination):
 
 def main():
     copy_static("static", "public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
 
 
 if __name__ == '__main__':
