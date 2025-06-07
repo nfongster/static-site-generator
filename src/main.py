@@ -1,4 +1,5 @@
 from nodes import *
+from conversion import *
 import os, shutil
 
 
@@ -34,6 +35,7 @@ def copy_static(source, destination):
 
 def main():
     copy_static("static", "public")
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 
 if __name__ == '__main__':
