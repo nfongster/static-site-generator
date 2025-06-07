@@ -42,14 +42,14 @@ def generate_page(from_path, template_path, dest_path):
         template = file.read()
     
     title = extract_title(markdown)
-    print(f"Title: {title}\n")
-    print(f"-----Content (Original Markdown)-----\n\n{markdown}\n")
+    # print(f"Title: {title}\n")
+    # print(f"-----Content (Original Markdown)-----\n\n{markdown}\n")
     node = markdown_to_html_node(markdown).to_html()
 
-    print("Editing template.html with the title and HTML content above...\n")
+    # print("Editing template.html with the title and HTML content above...\n")
     generated_html = template.replace(TITLE_PLACEHOLDER, title)\
                              .replace(CONTENT_PLACEHOLDER, node)
-    print(generated_html)
+    # print(generated_html)
 
     if not os.path.exists(os.path.dirname(dest_path)):
         os.mkdir(os.path.dirname(dest_path))

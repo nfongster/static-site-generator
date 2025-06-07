@@ -1,6 +1,6 @@
 from nodes import *
 from conversion import *
-import os, shutil
+import os, shutil, sys
 
 
 def __copy_recursive(source, destination):
@@ -34,6 +34,14 @@ def copy_static(source, destination):
 
 
 def main():
+    args, basepath = sys.argv, ""
+    if len(args) < 2:
+        print("Basepath defaulting to \"\\\".")
+        basepath = "\\"
+    else:
+        basepath = args[1]
+        print(f"Basepath: {basepath}")
+    
     copy_static("static", "public")
     generate_pages_recursive("content", "template.html", "public")
 
